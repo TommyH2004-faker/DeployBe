@@ -1,26 +1,6 @@
 version: "3.8"
 
 services:
-  mysql:
-    image: mysql:8.0
-    container_name: mysql-db
-    ports:
-      - "3308:3306"
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: websitenhua
-      MYSQL_USER: spring_04
-      MYSQL_PASSWORD: spring04
-    volumes:
-      - mysql_data:/var/lib/mysql
-      - ./full-backup.sql:/docker-entrypoint-initdb.d/full-backup.sql
-    restart: always
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
   backend:
     build: ./be/be_web
     container_name: springboot-app
@@ -30,13 +10,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://mainline.proxy.rlwy.net:37611/railway?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: XgXLVQaFzOBKyhRVSYOXQqcLyyXxjGvT
-
     restart: always
-    depends_on:
-      mysql:
-        condition: service_healthy
-
-
 
   frontend:
     build: ./fe/frontend_web
@@ -46,8 +20,3 @@ services:
     restart: always
     depends_on:
       - backend
-
-
-
-volumes:
-  mysql_data:
